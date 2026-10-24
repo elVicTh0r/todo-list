@@ -1,7 +1,10 @@
+//Controller não executa a regra de negócio. Ele recebe a requisição, chama o Service e transforma o resultado em uma resposta HTTP.
+
 import type { Request, Response } from "express";
-import type { Tarefa } from "../data/tarefas.js";
-import { tarefas, gerarId } from "../data/tarefas.js";
-import { buscarTarefaPorId, listar, listarPendentes, listarConcluidas, adicionar, finalizar, deletar } from "../service/tarefasService.js";
+import { TarefaService } from "../service/TarefaService.js";
+
+//Criando instância do TarefasService
+const service = new TarefaService();
 
 // Validador de ID
 function validarID(id: number): boolean {
@@ -9,18 +12,18 @@ function validarID(id: number): boolean {
 }
 
 export function listarTarefas(req: Request, res: Response) {
-    const resultado = listar();
+    const resultado = service.listar();
     return res.json(resultado);
 }
 
 export function tarefasPendentes(req: Request, res: Response) {
-    const resultado = listarPendentes();
+    const resultado = service.listarPendentes();
     return res.json(resultado);
 }
 
 // Exibir todas as tarefas CONCLUIDAS
 export function tarefasConcluidas(req: Request, res: Response) {
-    const resultado = listarConcluidas();
+    const resultado = service.listarConcluidas();
     return res.json(resultado);
 }
 
@@ -34,7 +37,7 @@ export function buscarPorId(req: Request, res: Response) {
         });
     }
 
-    const encontrada = buscarTarefaPorId(id);
+    const encontrada = service.buscarTarefaPorId(id);
 
     if(encontrada === undefined){
         return res.status(404).json ({
@@ -54,7 +57,7 @@ export function adicionarTarefa (req: Request, res: Response) {
         })
     }
 
-   const resultado = adicionar(descricao);
+   const resultado = service.adicionar(descricao);
 
     return res.status(201).json(resultado);
 }
@@ -69,7 +72,7 @@ export function finalizarTarefa(req: Request, res: Response) {
         });
     }
 
-    const resultado = finalizar(id);
+    const resultado = service.concluirTarefa(id);
 
     if(resultado === undefined){
         return res.status(404).json({
@@ -90,7 +93,7 @@ export function deletarTarefa(req: Request, res: Response){
         });
     }
 
-    const resultado = deletar(id)
+    const resultado = service.deletarTarefa(id)
 
     if(resultado === false){
         return res.status(404).json ({

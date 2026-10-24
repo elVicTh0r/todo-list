@@ -1,3 +1,5 @@
+//Server não executa regras de negócio. Ele configura e inicializa o Express, registra as rotas e deixa a API pronta para receber requisições HTTP.
+
 import express from "express";
 import tarefasRoutes from "./routes/tarefasRoutes.js"
 import tarefas from "./data/tarefas.js";
